@@ -1,8 +1,8 @@
 ############################## COMPILE VAR #####################################
 
 CC			=	gcc
-#CFLAGS		=	-fpic -Wall -Wextra -Werror
-CFLAGS		=	-fpic -Wall -Wextra -Werror -g -fsanitize=address,undefined
+CFLAGS		=	-fpic -Wall -Wextra -Werror
+#CFLAGS		=	-fpic -Wall -Wextra -Werror -g -fsanitize=address,undefined
 HDIR		=	includes
 SRCDIR		=	src
 HFLAGS		=	-I $(HDIR)
