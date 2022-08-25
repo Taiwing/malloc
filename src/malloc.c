@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/25 21:30:27 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/08/25 22:32:26 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ void	*realloc(void *ptr, size_t size)
 	void				*new_allocation;
 
 	ft_printf("\nrealloc(ptr = %p, size = %zu)\n", ptr, size); //TEMP
+	if (!ptr)
+		return (malloc(size));
 	block = ptr - sizeof(t_memory_block);
 	//TODO: remove this condition and optimize this to defragment memory
 	if (block->size >= size)

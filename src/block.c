@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:25 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/25 21:07:26 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/08/25 22:30:10 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ t_memory_zone	*get_block_zone(t_memory_block *block)
 		return (NULL);
 	while (block && block->prev)
 		block = block->prev;
-	return ((t_memory_zone *)block - sizeof(t_memory_zone));
+	return ((void *)block - sizeof(t_memory_zone));
 }
 
 /*
@@ -99,15 +99,18 @@ void		allocate_free_block(t_memory_block *block, size_t size)
 {
 	t_memory_block	new_block = { 0 };
 
+	ft_printf("allocate_free_block(block = %p, size = %zu) (ptr = %p)\n",
+		block, size, (void *)block + sizeof(t_memory_block)); //TEMP
 	block->free = 0;
 	if (is_splitable_block(block, size))
 	{
-		new_block.free = 1;
+		new_block.type = block->type;
 		new_block.size = block->size - ALIGN_EIGHT(size) - sizeof(new_block);
+		new_block.free = 1;
 		new_block.prev = block;
 		new_block.next = block->next;
 		block->size = ALIGN_EIGHT(size);
-		block->next = block + block->size;
+		block->next = (void *)block + sizeof(t_memory_block) + block->size;
 		ft_memcpy(block->next, &new_block, sizeof(new_block));
 	}
 }
