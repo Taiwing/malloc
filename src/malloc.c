@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/25 19:25:46 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/08/25 19:50:50 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,7 +196,7 @@ int			is_full_zone(t_memory_zone *zone)
 	return (1);
 }
 
-void		free(void *ptr)
+void	free(void *ptr)
 {
 	t_memory_zone	*zone;
 	t_memory_block	*block;
@@ -223,7 +223,7 @@ void		free(void *ptr)
 	//TODO: defragment memory by merging empty adjacent blocks
 }
 
-void		*malloc(size_t size)
+void	*malloc(size_t size)
 {
 	t_memory_zone	*zone = NULL;
 	t_memory_block	*block = NULL;
@@ -245,11 +245,19 @@ void		*malloc(size_t size)
 
 void	*realloc(void *ptr, size_t size)
 {
-	//TODO
-	(void)ptr;
-	(void)size;
+	t_memory_block		*block;
+	void				*new_allocation;
+
 	write(1, "realloc!\n", 9); //TEMP
-	//TEMP
-	//TEMP
-	return (NULL);
+	block = ptr - sizeof(t_memory_block);
+	//TODO: remove this condition and optimize this to defragment memory
+	if (block->size >= size)
+		return (ptr);
+	//TODO: optimize for when the block type remains the same and try to find
+	//a big enough block or create one by merging eventual successive free block
+	if (!(new_allocation = malloc(size)))
+		return (NULL);
+	memcpy(new_allocation, ptr, block->size);
+	free(ptr);
+	return (new_allocation);
 }
