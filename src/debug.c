@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:00:10 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/25 21:21:35 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/08/25 21:30:57 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,14 @@ static uint64_t	print_zone(t_memory_zone *zone)
 
 	if (is_free_zone(zone))
 		return (0);
-	ft_printf("%s : %p\n", g_block_type_strings[zone->type],
+	ft_printf("%s : 0x%llX\n", g_block_type_strings[zone->type],
 		(void *)zone + sizeof(t_memory_zone));
 	for (t_memory_block *ptr = zone->blocks; ptr; ptr = ptr->next)
 	{
 		if (ptr->free)
 			continue;
 		alloc = (void *)ptr + sizeof(t_memory_block);
-		ft_printf("%p - %p : %zu bytes\n", alloc, alloc + ptr->size, ptr->size);
+		ft_printf("0x%llX - 0x%llX : %zu bytes\n", alloc, alloc + ptr->size, ptr->size);
 		total += ptr->size;
 	}
 	return (total);
