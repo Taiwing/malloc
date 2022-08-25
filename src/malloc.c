@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/25 18:47:50 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/08/25 19:25:46 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,15 @@ t_memory_block	*get_free_block(t_memory_zone *zones, size_t size)
 	return (free_block);
 }
 
+t_memory_zone	*get_block_zone(t_memory_block *block)
+{
+	if (!block)
+		return (NULL);
+	while (block && block->prev)
+		block = block->prev;
+	return ((t_memory_zone *)block - sizeof(t_memory_zone));
+}
+
 /*
 ** Set a given free block as allocated.
 */
@@ -106,18 +115,6 @@ void		allocate_free_block(t_memory_block *block, size_t size)
 		block->next = block + block->size;
 		memcpy(block->next, &new_block, sizeof(new_block));
 	}
-}
-
-void		free(void *ptr)
-{
-	t_memory_block	*block;
-
-	if (!ptr)
-		return;
-	block = ptr - sizeof(t_memory_block);
-	block->free = 1;
-	//TODO: defragment memory by merging empty adjacent blocks
-	write(1, "free!\n", 6); //TEMP
 }
 
 size_t			get_zone_size(enum e_block_type type, size_t block_size)
@@ -168,6 +165,62 @@ t_memory_zone	*push_new_zone(t_memory_zone **zones, size_t size)
 		zones = &((*zones)->next);
 	*zones = zone;
 	return (zone);
+}
+
+void		delete_zone(t_memory_zone **zones, t_memory_zone *zone)
+{
+	if (zone->prev)
+		zone->prev->next = zone->next;
+	else
+		*zones = zone->next;
+	munmap(zone, zone->size);
+}
+
+int			is_free_zone(t_memory_zone *zone)
+{
+	if (!zone)
+		return (0);
+	for (t_memory_block *block = zone->blocks; block; block = block->next)
+		if (!block->free)
+			return (0);
+	return (1);
+}
+
+int			is_full_zone(t_memory_zone *zone)
+{
+	if (!zone)
+		return (0);
+	for (t_memory_block *block = zone->blocks; block; block = block->next)
+		if (block->free)
+			return (0);
+	return (1);
+}
+
+void		free(void *ptr)
+{
+	t_memory_zone	*zone;
+	t_memory_block	*block;
+
+	write(1, "free!\n", 6); //TEMP
+	if (!ptr)
+		return;
+	block = ptr - sizeof(t_memory_block);
+	block->free = 1;
+	zone = get_block_zone(block);
+	if (zone->type == E_LARGE_BLOCK)
+		delete_zone(&zones, zone);
+	else if (is_free_zone(zone))
+	{
+		for (t_memory_zone *ptr = zones; ptr; ptr = ptr->next)
+		{
+			if (ptr != zone && ptr->type == zone->type && !is_full_zone(ptr))
+			{
+				delete_zone(&zones, zone);
+				break;
+			}
+		}
+	}
+	//TODO: defragment memory by merging empty adjacent blocks
 }
 
 void		*malloc(size_t size)
