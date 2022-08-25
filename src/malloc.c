@@ -6,12 +6,13 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/25 19:50:50 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/08/25 20:00:10 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 #include <unistd.h>
+#include <stdint.h>
 #include <sys/mman.h>
 
 //TEMP
@@ -260,4 +261,14 @@ void	*realloc(void *ptr, size_t size)
 	memcpy(new_allocation, ptr, block->size);
 	free(ptr);
 	return (new_allocation);
+}
+
+void	*calloc(size_t nmemb, size_t size)
+{
+	void	*ptr;
+
+	if (SIZE_MAX / nmemb < size || !(ptr = malloc(nmemb * size)))
+		return (NULL);
+	bzero(ptr, nmemb * size);
+	return (ptr);
 }
