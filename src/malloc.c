@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/25 21:20:43 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/08/25 21:30:27 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	free(void *ptr)
 	t_memory_zone	*zone;
 	t_memory_block	*block;
 
-	ft_printf("free\n"); //TEMP
+	ft_printf("\nfree(ptr = %p)\n", ptr); //TEMP
 	if (!ptr)
 		return;
 	block = ptr - sizeof(t_memory_block);
@@ -48,7 +48,7 @@ void	*malloc(size_t size)
 	t_memory_zone	*zone = NULL;
 	t_memory_block	*block = NULL;
 
-	ft_printf("malloc\n"); //TEMP
+	ft_printf("\nmalloc(size = %zu)\n", size); //TEMP
 	if (!size)
 		return (NULL);
 	else if ((block = get_free_block(g_zones, size)))
@@ -69,7 +69,7 @@ void	*realloc(void *ptr, size_t size)
 	t_memory_block		*block;
 	void				*new_allocation;
 
-	ft_printf("realloc\n"); //TEMP
+	ft_printf("\nrealloc(ptr = %p, size = %zu)\n", ptr, size); //TEMP
 	block = ptr - sizeof(t_memory_block);
 	//TODO: remove this condition and optimize this to defragment memory
 	if (block->size >= size)
@@ -88,7 +88,7 @@ void	*calloc(size_t nmemb, size_t size)
 {
 	void	*ptr;
 
-	ft_printf("calloc\n"); //TEMP
+	ft_printf("\ncalloc(nmemb = %zu, size = %zu)\n", nmemb, size); //TEMP
 	if (SIZE_MAX / nmemb < size || !(ptr = malloc(nmemb * size)))
 		return (NULL);
 	ft_bzero(ptr, nmemb * size);
