@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:55 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/25 21:09:12 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/08/25 21:40:37 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static size_t		get_zone_size(enum e_block_type type, size_t block_size)
 
 t_memory_zone	*push_new_zone(t_memory_zone **zones, size_t size)
 {
-	t_memory_zone		*zone = NULL;
+	t_memory_zone		*zone = NULL, *ptr = NULL;
 	enum e_block_type	type = block_type_from_size(size);
 	size_t				zone_size = get_zone_size(type, size);
 	t_memory_block		first_block = { 0 };
@@ -58,9 +58,14 @@ t_memory_zone	*push_new_zone(t_memory_zone **zones, size_t size)
 	first_block.size = zone_size - sizeof(t_memory_zone);
 	first_block.free = 1;
 	ft_memcpy(zone->blocks, &first_block, sizeof(first_block));
-	while (*zones && (*zones)->next)
-		zones = &((*zones)->next);
-	*zones = zone;
+	if (!*zones)
+		*zones = zone;
+	else
+	{
+		for (ptr = *zones; ptr && ptr->next; ptr = ptr->next);
+		ptr->next = zone;
+		zone->prev = ptr;
+	}
 	return (zone);
 }
 
