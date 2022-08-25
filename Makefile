@@ -13,12 +13,16 @@ NAME		=	libft_malloc.so
 ############################## SOURCES #########################################
 
 SRCC			=	malloc.c\
+					block.c\
+					debug.c\
+					zone.c\
 
 ODIR			=	obj
 OBJ				=	$(patsubst %.c,%.o,$(SRCC))
 
 vpath			%.o	$(ODIR)
 vpath			%.h	$(HDIR)
+vpath			%.h	$(SUB1D)/$(HDIR)
 vpath			%.c	$(SRCDIR)
 
 ############################## BUILD ###########################################
@@ -31,7 +35,10 @@ $(NAME): $(SUB1D)/libft.a $(ODIR) $(OBJ)
 $(SUB1D)/libft.a:
 	make -C $(SUB1D)
 
-malloc.o: malloc.h
+malloc.o: malloc.h libft.h
+block.o: malloc.h libft.h
+debug.o: malloc.h libft.h
+zone.o: malloc.h libft.h
 %.o: %.c
 	@mkdir -p $(ODIR)
 	$(CC) -c $(CFLAGS) $< $(HFLAGS) -o $(ODIR)/$@

@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:10:38 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/25 17:52:34 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/08/25 21:21:47 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,40 @@ typedef struct				s_memory_zone
 	struct s_memory_zone	*next;
 }							t_memory_zone __attribute__ ((aligned(8)));
 
+/*
+** Global memory zone list
+*/
+extern t_memory_zone		*g_zones;
+
+/*
+** Block functions
+*/
+enum e_block_type	block_type_from_size(size_t size);
+t_memory_block		*get_free_block(t_memory_zone *zones, size_t size);
+t_memory_zone		*get_block_zone(t_memory_block *block);
+void				allocate_free_block(t_memory_block *block, size_t size);
+
+/*
+** Zone functions
+*/
+
+t_memory_zone	*push_new_zone(t_memory_zone **zones, size_t size);
+void			delete_zone(t_memory_zone **zones, t_memory_zone *zone);
+int				is_free_zone(t_memory_zone *zone);
+int				is_full_zone(t_memory_zone *zone);
+
+/*
+** Debug functions
+*/
+void	show_alloc_mem(void);
+
+/*
+** Malloc functions
+*/
 void	free(void *ptr);
 void	*malloc(size_t size);
 void	*realloc(void *ptr, size_t size);
+void	*calloc(size_t nmemb, size_t size);
 
 # define	TINY_ZONE_SIZE_MIN	(\
 	sizeof(t_memory_zone) +\
