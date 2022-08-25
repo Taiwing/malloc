@@ -1,0 +1,59 @@
+/* ipv6 Protocol */
+ldb [6]
+jne #0, drop	/* protocol: IMCPv6 */
+
+/* IMCPv6 id */
+ldh [44]
+jne #0, drop	/* probe echo id */
+
+/* IMCPv6 sequence */
+ldh [46]
+jne #0, drop	/* probe echo sequence */
+
+/* ipv6 source address */
+ldb [8]
+jne #0, error	
+ldb [9]
+jne #0, error	
+ldb [10]
+jne #0, error	
+ldb [11]
+jne #0, error	
+ldb [12]
+jne #0, error	
+ldb [13]
+jne #0, error	
+ldb [14]
+jne #0, error	
+ldb [15]
+jne #0, error	
+ldb [16]
+jne #0, error	
+ldb [17]
+jne #0, error	
+ldb [18]
+jne #0, error	
+ldb [19]
+jne #0, error	
+ldb [20]
+jne #0, error	
+ldb [21]
+jne #0, error	
+ldb [22]
+jne #0, error	
+ldb [23]
+jne #0, error	
+
+/* IMCPv6 type */
+ldb [40]
+jeq #0, success	/* type: IMCPv6_ECHOREPLY */
+jmp drop
+
+/* IMCPv6 type */
+error: ldb [40]
+jeq #0, success	/* type: IMCPv6_DESTUNREACH */
+jne #0, drop	/* type: IMCPv6_TIME_EXCEEDED */
+
+/* Return */
+success: ret #-1
+drop: ret #0

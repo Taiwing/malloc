@@ -1,0 +1,13 @@
+Use 'genmake -n bint_test -sn ../.. libft.a' to generate Makefile.
+
+Run ./bint_test to launch automatic tests.
+Run ./bint_test blabla to launch automatic tests with detailed output.
+Run ./bint_test bc to get interactive big ints calculator.
+
+The python scripts are used to generate tests for modops. In case they are
+used, do not forget to change the stop values in main.c or the size of the
+arrays in the headers if need be.
+
+The modexp tests are quick enough for use in ft_ssl up to 1024 bits if the
+libft and bint_test are compiled with -O3 (so do not forget to set the flag
+when pushing the repo).

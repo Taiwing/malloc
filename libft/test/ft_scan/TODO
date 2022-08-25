@@ -1,0 +1,2 @@
+- create ft_ip_rand function
+- add tcp syn scan to ft_scan

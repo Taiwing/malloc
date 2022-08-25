@@ -1,0 +1,1 @@
+-n libft.a -f "-fpic -Wall -Wextra -Werror"

@@ -1,0 +1,83 @@
+/* ipv6 source address */
+ldb [8]
+jne #0, drop	
+ldb [9]
+jne #0, drop	
+ldb [10]
+jne #0, drop	
+ldb [11]
+jne #0, drop	
+ldb [12]
+jne #0, drop	
+ldb [13]
+jne #0, drop	
+ldb [14]
+jne #0, drop	
+ldb [15]
+jne #0, drop	
+ldb [16]
+jne #0, drop	
+ldb [17]
+jne #0, drop	
+ldb [18]
+jne #0, drop	
+ldb [19]
+jne #0, drop	
+ldb [20]
+jne #0, drop	
+ldb [21]
+jne #0, drop	
+ldb [22]
+jne #0, drop	
+ldb [23]
+jne #0, drop	
+
+/* ipv6 Protocol */
+ldb [6]
+jeq #0, icmp	/* protocol: ICMP */
+jne #0, drop	/* protocol: TCP */
+
+/* TCP source port */
+ldh [40]
+jlt #0, drop 	/* TCP smallest source port */
+jgt #0, drop 	/* TCP biggest source port */
+
+/* TCP destination port */
+ldh [42]
+jlt #0, drop 	/* TCP smallest destination port */
+jgt #0, drop 	/* TCP biggest destination port */
+
+/* TCP flags */
+ldb [53]
+jset #0, success
+jmp drop
+
+/* ICMP type */
+icmp: ld [40]
+jne #0, drop	/* DEST_UNREACH */
+
+/* ICMP code */
+ld [41]
+jeq #0, success	/* 0 */
+jeq #1, success	/* 1 */
+jeq #2, success	/* 2 */
+jeq #3, success	/* 3 */
+jne #4, drop	/* 4 */
+
+/* ICMP protocol */
+ld [54]
+jne #0, drop	/* IPPROTO_TCP */
+
+/* TCP source port */
+ldh [88]
+jlt #0, drop 	/* TCP smallest source port */
+jgt #0, drop 	/* TCP biggest source port */
+
+/* TCP destination port */
+ldh [90]
+jlt #0, drop 	/* TCP smallest destination port */
+jgt #0, drop 	/* TCP biggest destination port */
+
+/* Return */
+success: ret #-1
+drop: ret #0

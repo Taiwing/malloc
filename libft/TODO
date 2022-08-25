@@ -1,0 +1,23 @@
+---- TODO ----
+
+- adapt every libft functions that need it to the new ft_errno system
+
+---- MAYBE ----
+
+- The scan filter is set twice at start since it is initialized in the scan
+  setup function. Decide if we really want to set it here instead. This not
+  really the most efficient way. It would be better to set it only once, but
+  then incoming packets should not be filtered by sequence (which is not a
+  problem, it can be done after but it requires updating the filters...).
+  (for context, this is referring to the ft_scan_set_filter() call in the
+  'src/net/ft_scan_send.c' file)
+
+- Rework scans to remove unused functions and make adventure mode possible
+
+---- FEAT ----
+
+- adventure mode (for net scans)
+
+- when genmake will be able to handle more than one level depth sources, move
+  sources of get_next_line, ft_printf and ft_getopt into different directories
+  in src and in includes

@@ -1,24 +1,25 @@
 ############################## COMPILE VAR #####################################
 
 CC			=	gcc
-#CFLAGS		=	-fpic -Wall -Wextra -Werror
-CFLAGS		=	-fpic -Wall -Wextra -Werror -g
+#CFLAGS		=	-Wall -Wextra -Werror -DTHREAD_SAFE
+CFLAGS		=	-Wall -Wextra -Werror -DTHREAD_SAFE -g -fsanitize=address,undefined
 HDIR		=	includes
 SRCDIR		=	src
-SUB1D		=	libft
+SUB1D		=	../..
 HFLAGS		=	-I $(HDIR) -I $(SUB1D)/$(HDIR)
 LIBS		=	$(SUB1D)/libft.a
-NAME		=	libft_malloc.so
+NAME		=	exec
 
 ############################## SOURCES #########################################
 
-SRCC			=	malloc.c\
+SRCC			=	main.c\
 
 ODIR			=	obj
 OBJ				=	$(patsubst %.c,%.o,$(SRCC))
 
 vpath			%.o	$(ODIR)
 vpath			%.h	$(HDIR)
+vpath			%.h	$(SUB1D)/$(HDIR)
 vpath			%.c	$(SRCDIR)
 
 ############################## BUILD ###########################################
@@ -26,12 +27,12 @@ vpath			%.c	$(SRCDIR)
 all: $(NAME)
 
 $(NAME): $(SUB1D)/libft.a $(ODIR) $(OBJ)
-	gcc -shared -fpic -o $@ $(patsubst %.o,$(ODIR)/%.o,$(OBJ)) $(LIBS)
+	$(CC) $(CFLAGS) -o $@ $(patsubst %.o,$(ODIR)/%.o,$(OBJ)) $(LIBS)
 
 $(SUB1D)/libft.a:
 	make -C $(SUB1D)
 
-malloc.o: malloc.h
+main.o: libft.h
 %.o: %.c
 	@mkdir -p $(ODIR)
 	$(CC) -c $(CFLAGS) $< $(HFLAGS) -o $(ODIR)/$@

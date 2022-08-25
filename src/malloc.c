@@ -6,19 +6,15 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/25 20:00:10 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/08/25 20:40:04 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
+#include "libft.h"
 #include <unistd.h>
 #include <stdint.h>
 #include <sys/mman.h>
-
-//TEMP
-#include <stdio.h>
-#include <string.h>
-//TEMP
 
 t_memory_zone	*zones = NULL;
 
@@ -114,7 +110,7 @@ void		allocate_free_block(t_memory_block *block, size_t size)
 		new_block.next = block->next;
 		block->size = ALIGN_EIGHT(size);
 		block->next = block + block->size;
-		memcpy(block->next, &new_block, sizeof(new_block));
+		ft_memcpy(block->next, &new_block, sizeof(new_block));
 	}
 }
 
@@ -161,7 +157,7 @@ t_memory_zone	*push_new_zone(t_memory_zone **zones, size_t size)
 	first_block.type = type;
 	first_block.size = zone_size - sizeof(t_memory_zone);
 	first_block.free = 1;
-	memcpy(zone->blocks, &first_block, sizeof(first_block));
+	ft_memcpy(zone->blocks, &first_block, sizeof(first_block));
 	while (*zones && (*zones)->next)
 		zones = &((*zones)->next);
 	*zones = zone;
@@ -202,7 +198,7 @@ void	free(void *ptr)
 	t_memory_zone	*zone;
 	t_memory_block	*block;
 
-	write(1, "free!\n", 6); //TEMP
+	ft_printf("free\n"); //TEMP
 	if (!ptr)
 		return;
 	block = ptr - sizeof(t_memory_block);
@@ -229,7 +225,7 @@ void	*malloc(size_t size)
 	t_memory_zone	*zone = NULL;
 	t_memory_block	*block = NULL;
 
-	write(1, "malloc!\n", 8); //TEMP
+	ft_printf("malloc\n"); //TEMP
 	if (!size)
 		return (NULL);
 	else if ((block = get_free_block(zones, size)))
@@ -249,7 +245,7 @@ void	*realloc(void *ptr, size_t size)
 	t_memory_block		*block;
 	void				*new_allocation;
 
-	write(1, "realloc!\n", 9); //TEMP
+	ft_printf("realloc\n"); //TEMP
 	block = ptr - sizeof(t_memory_block);
 	//TODO: remove this condition and optimize this to defragment memory
 	if (block->size >= size)
@@ -258,7 +254,7 @@ void	*realloc(void *ptr, size_t size)
 	//a big enough block or create one by merging eventual successive free block
 	if (!(new_allocation = malloc(size)))
 		return (NULL);
-	memcpy(new_allocation, ptr, block->size);
+	ft_memcpy(new_allocation, ptr, block->size);
 	free(ptr);
 	return (new_allocation);
 }
@@ -267,8 +263,14 @@ void	*calloc(size_t nmemb, size_t size)
 {
 	void	*ptr;
 
+	ft_printf("calloc\n"); //TEMP
 	if (SIZE_MAX / nmemb < size || !(ptr = malloc(nmemb * size)))
 		return (NULL);
-	bzero(ptr, nmemb * size);
+	ft_bzero(ptr, nmemb * size);
 	return (ptr);
+}
+
+void	show_alloc_mem(void)
+{
+	
 }

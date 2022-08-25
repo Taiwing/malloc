@@ -1,0 +1,55 @@
+/* ipv4 source address */
+ld [12]
+jne #0, drop
+
+/* ipv4 Protocol */
+ldb [9]
+jeq #0, icmp	/* protocol: ICMP */
+jne #0, drop	/* protocol: TCP */
+
+/* TCP source port */
+ldh [20]
+jlt #0, drop 	/* TCP smallest source port */
+jgt #0, drop 	/* TCP biggest source port */
+
+/* TCP destination port */
+ldh [22]
+jlt #0, drop 	/* TCP smallest destination port */
+jgt #0, drop 	/* TCP biggest destination port */
+
+/* TCP flags */
+ldb [33]
+jset #0, success	/* flags TH_SYN & TH_RST */
+jmp drop
+
+/* ICMP type */
+icmp: ld [20]
+jne #0, drop	/* DEST_UNREACH */
+
+/* ICMP code */
+ld [21]
+jeq #0, success		/* 0 */
+jeq #1, success		/* 1 */
+jeq #2, success		/* 2 */
+jeq #3, success		/* 3 */
+jeq #9, success		/* 9 */
+jeq #10, success	/* 10 */
+jne #13, drop		/* 13 */
+
+/* ICMP protocol */
+ld [37]
+jne #0, drop		/* IPPROTO_TCP */
+
+/* TCP source port */
+ldh [48]
+jlt #0, drop 	/* TCP smallest source port */
+jgt #0, drop 	/* TCP biggest source port */
+
+/* TCP destination port */
+ldh [50]
+jlt #0, drop 	/* TCP smallest destination port */
+jgt #0, drop 	/* TCP biggest destination port */
+
+/* Return */
+success: ret #-1
+drop: ret #0

@@ -1,0 +1,29 @@
+/* ipv4 Protocol */
+ldb [9]
+jne #0, drop	/* protocol: ICMP */
+
+/* ICMP id */
+ldh [24]
+jne #0, drop	/* probe echo id */
+
+/* ICMP sequence */
+ldh [26]
+jne #0, drop	/* probe echo sequence */
+
+/* ipv4 source address */
+ld [12]
+jne #0, error
+
+/* ICMP type */
+ldb [20]
+jeq #0, success	/* type: ICMP_ECHOREPLY */
+jmp drop
+
+/* ICMP type */
+error: ldb [20]
+jeq #0, success	/* type: ICMP_DESTUNREACH */
+jne #0, drop	/* type: ICMP_TIME_EXCEEDED */
+
+/* Return */
+success: ret #-1
+drop: ret #0
