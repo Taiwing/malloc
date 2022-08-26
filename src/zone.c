@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:55 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/25 21:40:37 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/08/26 13:51:15 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ t_memory_zone	*push_new_zone(t_memory_zone **zones, size_t size)
 	size_t				zone_size = get_zone_size(type, size);
 	t_memory_block		first_block = { 0 };
 
+	ft_printf("push_new_zone(zones = %p, size = %zu)\n", zones, size); //TEMP
 	if ((zone = mmap(NULL, zone_size, PROT_READ | PROT_WRITE | PROT_EXEC,
 		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)) == MAP_FAILED || !zone)
 		return (NULL);

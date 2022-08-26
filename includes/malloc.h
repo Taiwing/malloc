@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:10:38 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/25 21:21:47 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/08/26 14:06:33 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ int				is_full_zone(t_memory_zone *zone);
 ** Debug functions
 */
 void	show_alloc_mem(void);
+void	show_mem(void);
 
 /*
 ** Malloc functions

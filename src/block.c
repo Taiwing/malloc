@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:25 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/25 22:30:10 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/08/26 14:06:02 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,11 @@ t_memory_block	*get_free_block(t_memory_zone *zones, size_t size)
 	type = block_type_from_size(size);
 	if (!zones || type == E_LARGE_BLOCK || type == E_INVALID_BLOCK)
 		return (free_block);
-	for (; zones; zones = zones->next)
+	for (t_memory_zone *ptr = zones; ptr; ptr = ptr->next)
 	{
-		if (zones->type != type)
+		if (ptr->type != type)
 			continue;
-		for (t_memory_block *block = zones->blocks; block; block = block->next)
+		for (t_memory_block *block = ptr->blocks; block; block = block->next)
 		{
 			if (!block->free)
 				continue;
