@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:55 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/26 13:51:15 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/19 16:07:19 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ t_memory_zone	*push_new_zone(t_memory_zone **zones, size_t size)
 	zone->prev = NULL;
 	zone->next = NULL;
 	first_block.type = type;
-	first_block.size = zone_size - sizeof(t_memory_zone);
+	first_block.size = zone_size - sizeof(t_memory_zone) - sizeof(t_memory_block);
 	first_block.free = 1;
 	ft_memcpy(zone->blocks, &first_block, sizeof(first_block));
 	if (!*zones)
@@ -76,6 +76,8 @@ void		delete_zone(t_memory_zone **zones, t_memory_zone *zone)
 		zone->prev->next = zone->next;
 	else
 		*zones = zone->next;
+	if (zone->next)
+		zone->next->prev = zone->prev;
 	munmap(zone, zone->size);
 }
 
