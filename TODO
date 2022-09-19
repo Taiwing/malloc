@@ -1,0 +1,4 @@
+- make it so the addresses of the zones are increasing
+  (is it really what subject wants ? this is really fucking stupid)
+  maybe with a kind of insert sort (just check the addresses when
+  pushing the new zones)
