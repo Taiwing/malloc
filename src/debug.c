@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:00:10 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/26 14:10:01 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/19 13:07:03 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static uint64_t	print_zone(t_memory_zone *zone, int show_free, uint64_t *maped_t
 
 	if (is_free_zone(zone) && !show_free)
 		return (0);
-	ft_printf("%s : 0x%llX\n", g_block_type_strings[zone->type],
+	ft_printf("%s : %p\n", g_block_type_strings[zone->type],
 		(void *)zone + sizeof(t_memory_zone));
 	for (t_memory_block *ptr = zone->blocks; ptr; ptr = ptr->next)
 	{
@@ -32,11 +32,11 @@ static uint64_t	print_zone(t_memory_zone *zone, int show_free, uint64_t *maped_t
 			continue;
 		alloc = (void *)ptr + sizeof(t_memory_block);
 		if (show_free)
-			ft_printf("0x%llX - 0x%llX : %zu %s bytes\n",
+			ft_printf("%p - %p : %zu %s bytes\n",
 				alloc, alloc + ptr->size, ptr->size,
 				ptr->free ? "free" : "allocated");
 		else
-			ft_printf("0x%llX - 0x%llX : %zu bytes\n",
+			ft_printf("%p - %p : %zu bytes\n",
 				alloc, alloc + ptr->size, ptr->size);
 		if (!ptr->free)
 			total += ptr->size;
