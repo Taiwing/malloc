@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:10:38 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/26 14:06:33 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/19 17:08:06 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define MALLOC_H
 
 # include <stdlib.h>
+# include <stdint.h>
 
 enum e_block_type	{
 	E_INVALID_BLOCK,
@@ -79,6 +80,7 @@ enum e_block_type	block_type_from_size(size_t size);
 t_memory_block		*get_free_block(t_memory_zone *zones, size_t size);
 t_memory_zone		*get_block_zone(t_memory_block *block);
 void				allocate_free_block(t_memory_block *block, size_t size);
+void				merge_free_blocks(t_memory_block *block);
 
 /*
 ** Zone functions
@@ -92,8 +94,10 @@ int				is_full_zone(t_memory_zone *zone);
 /*
 ** Debug functions
 */
-void	show_alloc_mem(void);
-void	show_mem(void);
+uint64_t	print_zone(t_memory_zone *zone,
+		int show_free, uint64_t *maped_total);
+void		show_alloc_mem(void);
+void		show_mem(void);
 
 /*
 ** Malloc functions

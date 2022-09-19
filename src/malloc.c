@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/26 14:14:09 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/19 17:15:52 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	free(void *ptr)
 	t_memory_zone	*zone;
 	t_memory_block	*block;
 
-	ft_printf("\nfree(ptr = %p)\n", ptr); //TEMP
+	//ft_printf("\nfree(ptr = %p)\n", ptr); //TEMP
 	if (!ptr)
 		return;
 	block = ptr - sizeof(t_memory_block);
@@ -39,8 +39,8 @@ void	free(void *ptr)
 			}
 		}
 	}
-	show_mem(); //TEMP
-	//TODO: defragment memory by merging empty adjacent blocks
+	merge_free_blocks(block);
+	//show_mem(); //TEMP
 }
 
 void	*malloc(size_t size)
@@ -48,7 +48,7 @@ void	*malloc(size_t size)
 	t_memory_zone	*zone = NULL;
 	t_memory_block	*block = NULL;
 
-	ft_printf("\nmalloc(size = %zu)\n", size); //TEMP
+	//ft_printf("\nmalloc(size = %zu)\n", size); //TEMP
 	if (!size)
 		return (NULL);
 	else if ((block = get_free_block(g_zones, size)))
@@ -60,12 +60,7 @@ void	*malloc(size_t size)
 		block = zone->blocks;
 		allocate_free_block(block, size);
 	}
-	show_mem(); //TEMP
-	//TEMP
-	ft_printf("COME ON!\n");
-	//ft_bzero((void *)block + sizeof(t_memory_block), block->size);
-	ft_printf("YAY!!!\n");
-	//TEMP
+	//show_mem(); //TEMP
 	return ((void *)block + sizeof(t_memory_block));
 }
 
@@ -74,7 +69,7 @@ void	*realloc(void *ptr, size_t size)
 	t_memory_block		*block;
 	void				*new_allocation;
 
-	ft_printf("\nrealloc(ptr = %p, size = %zu)\n", ptr, size); //TEMP
+	//ft_printf("\nrealloc(ptr = %p, size = %zu)\n", ptr, size); //TEMP
 	if (!ptr)
 		return (malloc(size));
 	block = ptr - sizeof(t_memory_block);
@@ -83,24 +78,11 @@ void	*realloc(void *ptr, size_t size)
 		return (ptr);
 	//TODO: optimize for when the block type remains the same and try to find
 	//a big enough block or create one by merging eventual successive free block
-	ft_printf("NIQUE 0\n");
 	if (!(new_allocation = malloc(size)))
 		return (NULL);
-	ft_printf("NIQUE 1\n");
-	ft_printf(
-		"size = %zu\n"
-		"new_allocation = %p\n"
-		"ptr = %p\n"
-		"block->size = %zu\n"
-		"SIZE_MAX = %zu\n",
-		size, new_allocation, ptr, block->size, SIZE_MAX
-	);
 	ft_memcpy(new_allocation, ptr, block->size);
-	ft_printf("NIQUE 2\n");
 	free(ptr);
-	ft_printf("NIQUE 3\n");
-	show_mem(); //TEMP
-	ft_printf("NIQUE 4\n");
+	//show_mem(); //TEMP
 	return (new_allocation);
 }
 
@@ -108,10 +90,10 @@ void	*calloc(size_t nmemb, size_t size)
 {
 	void	*ptr;
 
-	ft_printf("\ncalloc(nmemb = %zu, size = %zu)\n", nmemb, size); //TEMP
+	//ft_printf("\ncalloc(nmemb = %zu, size = %zu)\n", nmemb, size); //TEMP
 	if (SIZE_MAX / nmemb < size || !(ptr = malloc(nmemb * size)))
 		return (NULL);
 	ft_bzero(ptr, nmemb * size);
-	show_mem(); //TEMP
+	//show_mem(); //TEMP
 	return (ptr);
 }

@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:00:10 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/19 13:07:03 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/19 16:04:38 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char			*g_block_type_strings[4] = {
 	"INVALID", "TINY", "SMALL", "LARGE"
 };
 
-static uint64_t	print_zone(t_memory_zone *zone, int show_free, uint64_t *maped_total)
+uint64_t	print_zone(t_memory_zone *zone, int show_free, uint64_t *maped_total)
 {
 	void		*alloc;
 	uint64_t	total = 0;

@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:25 by yforeau           #+#    #+#             */
-/*   Updated: 2022/08/26 14:06:02 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/19 17:15:33 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,8 @@ void		allocate_free_block(t_memory_block *block, size_t size)
 {
 	t_memory_block	new_block = { 0 };
 
-	ft_printf("allocate_free_block(block = %p, size = %zu) (ptr = %p)\n",
-		block, size, (void *)block + sizeof(t_memory_block)); //TEMP
+	//ft_printf("allocate_free_block(block = %p, size = %zu) (ptr = %p)\n",
+	//	block, size, (void *)block + sizeof(t_memory_block)); //TEMP
 	block->free = 0;
 	if (is_splitable_block(block, size))
 	{
@@ -112,5 +112,29 @@ void		allocate_free_block(t_memory_block *block, size_t size)
 		block->size = ALIGN_EIGHT(size);
 		block->next = (void *)block + sizeof(t_memory_block) + block->size;
 		ft_memcpy(block->next, &new_block, sizeof(new_block));
+	}
+}
+
+/*
+** Defragment memory by merging adjacent free blocks.
+*/
+void		merge_free_blocks(t_memory_block *block)
+{
+	if (!block->free)
+		return;
+	while (block->prev && block->prev->free)
+	{
+		block->prev->size += sizeof(t_memory_block) + block->size;
+		block->prev->next = block->next;
+		if (block->next)
+			block->next->prev = block->prev;
+		block = block->prev;
+	}
+	while (block->next && block->next->free)
+	{
+		block->size += sizeof(t_memory_block) + block->next->size;
+		block->next = block->next->next;
+		if (block->next)
+			block->next->prev = block;
 	}
 }
