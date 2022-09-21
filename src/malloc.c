@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 15:36:31 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 15:45:05 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,11 @@ void		*realloc(void *ptr, size_t size)
 	if (!ptr)
 		return (malloc(size));
 	block = ptr - sizeof(t_memory_block);
+	if (!get_block_zone(g_zones, block))
+	{
+		ft_dprintf(2, "realloc(): invalid pointer\n");
+		abort();
+	}
 	//TODO: remove this condition and optimize this to defragment memory
 	if (block->size >= size)
 		return (ptr);
