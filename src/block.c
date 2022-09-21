@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:25 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 13:09:14 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 14:36:17 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,6 @@ void		allocate_free_block(t_memory_block *block, size_t size)
 {
 	t_memory_block	new_block = { 0 };
 
-	//ft_printf("allocate_free_block(block = %p, size = %zu) (ptr = %p)\n",
-	//	block, size, (void *)block + sizeof(t_memory_block)); //TEMP
 	block->free = 0;
 	if (is_splitable_block(block, size))
 	{

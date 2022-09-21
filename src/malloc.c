@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 14:05:49 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 14:39:56 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,18 @@
 #include "libft.h"
 
 t_memory_zone	*g_zones = NULL;
+t_malloc_config	config = { 0 };
 
-void	free(void *ptr)
+void __attribute__ ((constructor))	init_malloc(void)
+{
+	config.history = !!getenv("MALLOC_HISTORY");
+}
+
+static void	free_internal(void *ptr)
 {
 	t_memory_zone	*zone;
 	t_memory_block	*block;
 
-	//ft_printf("\nfree(ptr = %p)\n", ptr); //TEMP
 	if (!ptr)
 		return;
 	block = ptr - sizeof(t_memory_block);
@@ -41,15 +46,21 @@ void	free(void *ptr)
 		}
 	}
 	defragment_zone(zone);
+}
+
+void		free(void *ptr)
+{
+	if (config.history)
+		ft_dprintf(2, "free(ptr = %p)\n", ptr);
+	free_internal(ptr);
 	//show_mem(); //TEMP
 }
 
-void	*malloc(size_t size)
+static void	*malloc_internal(size_t size)
 {
 	t_memory_zone	*zone = NULL;
 	t_memory_block	*block = NULL;
 
-	//ft_printf("\nmalloc(size = %zu)\n", size); //TEMP
 	if (!size)
 		return (NULL);
 	else if ((block = get_free_block(g_zones, size)))
@@ -61,16 +72,27 @@ void	*malloc(size_t size)
 		block = zone->blocks;
 		allocate_free_block(block, size);
 	}
-	//show_mem(); //TEMP
 	return ((void *)block + sizeof(t_memory_block));
 }
 
-void	*realloc(void *ptr, size_t size)
+void		*malloc(size_t size)
+{
+	void	*ret;
+
+	if (config.history)
+		ft_dprintf(2, "malloc(size = %zu)\n", size);
+	ret = malloc_internal(size);
+	//show_mem(); //TEMP
+	return (ret);
+}
+
+void		*realloc(void *ptr, size_t size)
 {
 	t_memory_block		*block;
 	void				*new_allocation;
 
-	//ft_printf("\nrealloc(ptr = %p, size = %zu)\n", ptr, size); //TEMP
+	if (config.history)
+		ft_dprintf(2, "realloc(ptr = %p, size = %zu)\n", ptr, size);
 	if (!ptr)
 		return (malloc(size));
 	block = ptr - sizeof(t_memory_block);
@@ -79,20 +101,21 @@ void	*realloc(void *ptr, size_t size)
 		return (ptr);
 	//TODO: optimize for when the block type remains the same and try to find
 	//a big enough block or create one by merging eventual successive free block
-	if (!(new_allocation = malloc(size)))
+	if (!(new_allocation = malloc_internal(size)))
 		return (NULL);
 	ft_memcpy(new_allocation, ptr, block->size);
-	free(ptr);
+	free_internal(ptr);
 	//show_mem(); //TEMP
 	return (new_allocation);
 }
 
-void	*calloc(size_t nmemb, size_t size)
+void		*calloc(size_t nmemb, size_t size)
 {
 	void	*ptr;
 
-	//ft_printf("\ncalloc(nmemb = %zu, size = %zu)\n", nmemb, size); //TEMP
-	if (SIZE_MAX / nmemb < size || !(ptr = malloc(nmemb * size)))
+	if (config.history)
+		ft_dprintf(2, "calloc(nmemb = %zu, size = %zu)\n", nmemb, size);
+	if (SIZE_MAX / nmemb < size || !(ptr = malloc_internal(nmemb * size)))
 		return (NULL);
 	ft_bzero(ptr, nmemb * size);
 	//show_mem(); //TEMP

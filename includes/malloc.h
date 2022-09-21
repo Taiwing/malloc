@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:10:38 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 13:09:23 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 14:37:20 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,25 @@ typedef struct				s_memory_zone
 }							t_memory_zone __attribute__ ((aligned(8)));
 
 /*
-** Global memory zone list
+** Malloc Config: malloc configuration
+**
+** history: show malloc functions calls
+*/
+typedef struct				s_malloc_config
+{
+	int						history;
+}							t_malloc_config;
+
+/*
+** Global variables
 */
 extern t_memory_zone		*g_zones;
+extern t_malloc_config		config;
+
+/*
+** Library functions
+*/
+void __attribute__ ((constructor))	init_malloc(void);
 
 /*
 ** Block functions
@@ -81,7 +97,6 @@ void				allocate_free_block(t_memory_block *block, size_t size);
 /*
 ** Zone functions
 */
-
 t_memory_zone	*push_new_zone(t_memory_zone **zones, size_t size);
 void			delete_zone(t_memory_zone **zones, t_memory_zone *zone);
 int				is_free_zone(t_memory_zone *zone);
