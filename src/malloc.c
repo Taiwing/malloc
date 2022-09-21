@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 14:02:36 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 14:05:49 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	free(void *ptr)
 	block = ptr - sizeof(t_memory_block);
 	if (!(zone = get_block_zone(g_zones, block)))
 	{
-		ft_printf("free(): invalid pointer\n");
+		ft_dprintf(2, "free(): invalid pointer\n");
 		abort();
 	}
 	block->free = 1;
