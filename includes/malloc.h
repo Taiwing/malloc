@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:10:38 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 14:51:30 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 14:53:58 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,8 +106,7 @@ void			defragment_zone(t_memory_zone *zone);
 /*
 ** Debug functions
 */
-uint64_t	print_zone(t_memory_zone *zone,
-int			show_free, uint64_t *maped_total);
+uint64_t	print_zone(t_memory_zone *zone, int show_free, uint64_t *maped);
 void		show_alloc_mem(void);
 void		show_mem(void);
 
