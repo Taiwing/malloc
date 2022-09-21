@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:25 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/19 17:15:33 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 13:09:14 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,13 +83,13 @@ t_memory_block	*get_free_block(t_memory_zone *zones, size_t size)
 /*
 ** Get the given block memory zone
 */
-t_memory_zone	*get_block_zone(t_memory_block *block)
+t_memory_zone	*get_block_zone(t_memory_zone *zones, t_memory_block *block)
 {
-	if (!block)
-		return (NULL);
-	while (block && block->prev)
-		block = block->prev;
-	return ((void *)block - sizeof(t_memory_zone));
+	for (t_memory_zone *zone = zones; zone; zone = zone->next)
+		for (t_memory_block *ptr = zone->blocks; ptr; ptr = ptr->next)
+			if (ptr == block)
+				return (zone);
+	return (NULL);
 }
 
 /*
@@ -107,7 +107,6 @@ void		allocate_free_block(t_memory_block *block, size_t size)
 		new_block.type = block->type;
 		new_block.size = block->size - ALIGN_EIGHT(size) - sizeof(new_block);
 		new_block.free = 1;
-		new_block.prev = block;
 		new_block.next = block->next;
 		block->size = ALIGN_EIGHT(size);
 		block->next = (void *)block + sizeof(t_memory_block) + block->size;
@@ -122,19 +121,9 @@ void		merge_free_blocks(t_memory_block *block)
 {
 	if (!block->free)
 		return;
-	while (block->prev && block->prev->free)
-	{
-		block->prev->size += sizeof(t_memory_block) + block->size;
-		block->prev->next = block->next;
-		if (block->next)
-			block->next->prev = block->prev;
-		block = block->prev;
-	}
 	while (block->next && block->next->free)
 	{
 		block->size += sizeof(t_memory_block) + block->next->size;
 		block->next = block->next->next;
-		if (block->next)
-			block->next->prev = block;
 	}
 }

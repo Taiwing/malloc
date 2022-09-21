@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/19 17:15:52 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 14:02:36 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,22 +24,23 @@ void	free(void *ptr)
 	if (!ptr)
 		return;
 	block = ptr - sizeof(t_memory_block);
+	if (!(zone = get_block_zone(g_zones, block)))
+	{
+		ft_printf("free(): invalid pointer\n");
+		abort();
+	}
 	block->free = 1;
-	zone = get_block_zone(block);
 	if (zone->type == E_LARGE_BLOCK)
-		delete_zone(&g_zones, zone);
+		return (delete_zone(&g_zones, zone));
 	else if (is_free_zone(zone))
 	{
 		for (t_memory_zone *ptr = g_zones; ptr; ptr = ptr->next)
 		{
 			if (ptr != zone && ptr->type == zone->type && !is_full_zone(ptr))
-			{
-				delete_zone(&g_zones, zone);
-				break;
-			}
+				return (delete_zone(&g_zones, zone));
 		}
 	}
-	merge_free_blocks(block);
+	defragment_zone(zone);
 	//show_mem(); //TEMP
 }
 

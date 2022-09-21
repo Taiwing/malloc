@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:55 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 11:39:58 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 13:07:31 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,4 +100,21 @@ int			is_full_zone(t_memory_zone *zone)
 		if (block->free)
 			return (0);
 	return (1);
+}
+
+/*
+** Defragment memory by merging adjacent free blocks.
+*/
+void		defragment_zone(t_memory_zone *zone)
+{
+	for (t_memory_block *block = zone->blocks; block; block = block->next)
+	{
+		if (!block->free)
+			continue;
+		while (block->next && block->next->free)
+		{
+			block->size += sizeof(t_memory_block) + block->next->size;
+			block->next = block->next->next;
+		}
+	}
 }
