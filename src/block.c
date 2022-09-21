@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:25 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 16:05:34 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 16:08:09 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,19 +109,5 @@ void		allocate_block(t_memory_block *block, size_t size)
 		block->size = ALIGN_EIGHT(size);
 		block->next = (void *)block + sizeof(t_memory_block) + block->size;
 		ft_memcpy(block->next, &new_block, sizeof(new_block));
-	}
-}
-
-/*
-** Defragment memory by merging adjacent free blocks.
-*/
-void		merge_free_blocks(t_memory_block *block)
-{
-	if (!block->free)
-		return;
-	while (block->next && block->next->free)
-	{
-		block->size += sizeof(t_memory_block) + block->next->size;
-		block->next = block->next->next;
 	}
 }
