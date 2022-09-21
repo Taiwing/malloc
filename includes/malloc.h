@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:10:38 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 14:53:58 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 15:24:16 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,12 @@ typedef struct				s_memory_zone
 ** Malloc Config: malloc configuration
 **
 ** history: show malloc functions calls
+** show: print malloc memory state on change
 */
 typedef struct				s_malloc_config
 {
 	int						history;
+	int						show;
 }							t_malloc_config;
 
 /*

@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:00:10 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/19 16:04:38 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 15:11:36 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,15 @@ char			*g_block_type_strings[4] = {
 	"INVALID", "TINY", "SMALL", "LARGE"
 };
 
-uint64_t	print_zone(t_memory_zone *zone, int show_free, uint64_t *maped_total)
+uint64_t		print_zone(t_memory_zone *zone, int show_free,
+	uint64_t *maped_total)
 {
 	void		*alloc;
 	uint64_t	total = 0;
 
 	if (is_free_zone(zone) && !show_free)
 		return (0);
-	ft_printf("%s : %p\n", g_block_type_strings[zone->type],
+	ft_dprintf(2, "%s : %p\n", g_block_type_strings[zone->type],
 		(void *)zone + sizeof(t_memory_zone));
 	for (t_memory_block *ptr = zone->blocks; ptr; ptr = ptr->next)
 	{
@@ -32,11 +33,11 @@ uint64_t	print_zone(t_memory_zone *zone, int show_free, uint64_t *maped_total)
 			continue;
 		alloc = (void *)ptr + sizeof(t_memory_block);
 		if (show_free)
-			ft_printf("%p - %p : %zu %s bytes\n",
+			ft_dprintf(2, "%p - %p : %zu %s bytes\n",
 				alloc, alloc + ptr->size, ptr->size,
 				ptr->free ? "free" : "allocated");
 		else
-			ft_printf("%p - %p : %zu bytes\n",
+			ft_dprintf(2, "%p - %p : %zu bytes\n",
 				alloc, alloc + ptr->size, ptr->size);
 		if (!ptr->free)
 			total += ptr->size;
@@ -52,7 +53,7 @@ void			show_alloc_mem(void)
 
 	for (t_memory_zone *ptr = g_zones; ptr; ptr = ptr->next)
 		allocated += print_zone(ptr, 0, NULL);
-	ft_printf("Total : %llu bytes\n", allocated);
+	ft_dprintf(2, "Total : %llu bytes\n", allocated);
 }
 
 void			show_mem(void)
@@ -61,6 +62,6 @@ void			show_mem(void)
 
 	for (t_memory_zone *ptr = g_zones; ptr; ptr = ptr->next)
 		allocated += print_zone(ptr, 1, &total);
-	ft_printf("Allocated : %llu bytes\n", allocated);
-	ft_printf("Total : %llu bytes\n", total);
+	ft_dprintf(2, "Allocated : %llu bytes\n", allocated);
+	ft_dprintf(2, "Total : %llu bytes\n", total);
 }
