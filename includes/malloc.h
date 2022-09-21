@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:10:38 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 15:36:11 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 16:05:26 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ enum e_block_type	block_type_from_size(size_t size);
 t_memory_block		*get_free_block(t_memory_zone *zones, size_t size);
 t_memory_zone		*get_block_zone(t_memory_zone *zones,
 	t_memory_block *block);
-void				allocate_free_block(t_memory_block *block, size_t size);
+void				allocate_block(t_memory_block *block, size_t size);
 
 /*
 ** Zone functions

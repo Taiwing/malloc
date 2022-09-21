@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 15:45:05 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 15:59:58 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,13 +66,13 @@ static void	*malloc_internal(size_t size)
 	if (!size)
 		return (NULL);
 	else if ((block = get_free_block(g_zones, size)))
-		allocate_free_block(block, size);
+		allocate_block(block, size);
 	else if (!(zone = push_new_zone(&g_zones, size)))
 		return (NULL);
 	else
 	{
 		block = zone->blocks;
-		allocate_free_block(block, size);
+		allocate_block(block, size);
 	}
 	return ((void *)block + sizeof(t_memory_block));
 }
@@ -92,28 +92,33 @@ void		*malloc(size_t size)
 void		*realloc(void *ptr, size_t size)
 {
 	t_memory_block		*block;
-	void				*new_allocation;
+	void				*new_allocation = ptr;
 
 	if (g_config.history)
 		ft_dprintf(2, "%crealloc(ptr = %p, size = %zu)\n",
 			g_config.show ? '\n' : 0, ptr, size);
 	if (!ptr)
-		return (malloc(size));
-	block = ptr - sizeof(t_memory_block);
-	if (!get_block_zone(g_zones, block))
+		new_allocation = malloc_internal(size);
+	else
 	{
-		ft_dprintf(2, "realloc(): invalid pointer\n");
-		abort();
+		block = ptr - sizeof(t_memory_block);
+		if (!get_block_zone(g_zones, block))
+		{
+			ft_dprintf(2, "realloc(): invalid pointer\n");
+			abort();
+		}
+		if (size < block->size)
+			allocate_block(block, size);
+		else if (size > block->size)
+		{
+			//TODO: optimize for when the block type remains the same and try to find
+			//a big enough block or create one by merging eventual successive free block
+			if (!(new_allocation = malloc_internal(size)))
+				return (NULL);
+			ft_memcpy(new_allocation, ptr, block->size);
+			free_internal(ptr);
+		}
 	}
-	//TODO: remove this condition and optimize this to defragment memory
-	if (block->size >= size)
-		return (ptr);
-	//TODO: optimize for when the block type remains the same and try to find
-	//a big enough block or create one by merging eventual successive free block
-	if (!(new_allocation = malloc_internal(size)))
-		return (NULL);
-	ft_memcpy(new_allocation, ptr, block->size);
-	free_internal(ptr);
 	if (g_config.show)
 		show_alloc_mem();
 	return (new_allocation);
