@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:10:38 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 15:24:16 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 15:36:11 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ typedef struct				s_malloc_config
 ** Global variables
 */
 extern t_memory_zone		*g_zones;
-extern t_malloc_config		config;
+extern t_malloc_config		g_config;
 
 /*
 ** Library functions

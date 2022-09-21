@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 15:27:31 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 15:36:31 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 #include "libft.h"
 
 t_memory_zone	*g_zones = NULL;
-t_malloc_config	config = { 0 };
+t_malloc_config	g_config = { 0 };
 
 void __attribute__ ((constructor))	init_malloc(void)
 {
-	config.history = !!getenv("MALLOC_HISTORY");
-	config.show = !!getenv("MALLOC_SHOW");
+	g_config.history = !!getenv("MALLOC_HISTORY");
+	g_config.show = !!getenv("MALLOC_SHOW");
 }
 
 static void	free_internal(void *ptr)
@@ -51,10 +51,10 @@ static void	free_internal(void *ptr)
 
 void		free(void *ptr)
 {
-	if (config.history)
-		ft_dprintf(2, "%cfree(ptr = %p)\n", config.show ? '\n' : 0, ptr);
+	if (g_config.history)
+		ft_dprintf(2, "%cfree(ptr = %p)\n", g_config.show ? '\n' : 0, ptr);
 	free_internal(ptr);
-	if (config.show)
+	if (g_config.show)
 		show_alloc_mem();
 }
 
@@ -81,10 +81,10 @@ void		*malloc(size_t size)
 {
 	void	*ret;
 
-	if (config.history)
-		ft_dprintf(2, "%cmalloc(size = %zu)\n", config.show ? '\n' : 0, size);
+	if (g_config.history)
+		ft_dprintf(2, "%cmalloc(size = %zu)\n", g_config.show ? '\n' : 0, size);
 	ret = malloc_internal(size);
-	if (config.show)
+	if (g_config.show)
 		show_alloc_mem();
 	return (ret);
 }
@@ -94,9 +94,9 @@ void		*realloc(void *ptr, size_t size)
 	t_memory_block		*block;
 	void				*new_allocation;
 
-	if (config.history)
+	if (g_config.history)
 		ft_dprintf(2, "%crealloc(ptr = %p, size = %zu)\n",
-			config.show ? '\n' : 0, ptr, size);
+			g_config.show ? '\n' : 0, ptr, size);
 	if (!ptr)
 		return (malloc(size));
 	block = ptr - sizeof(t_memory_block);
@@ -109,7 +109,7 @@ void		*realloc(void *ptr, size_t size)
 		return (NULL);
 	ft_memcpy(new_allocation, ptr, block->size);
 	free_internal(ptr);
-	if (config.show)
+	if (g_config.show)
 		show_alloc_mem();
 	return (new_allocation);
 }
@@ -118,13 +118,13 @@ void		*calloc(size_t nmemb, size_t size)
 {
 	void	*ptr;
 
-	if (config.history)
+	if (g_config.history)
 		ft_dprintf(2, "%ccalloc(nmemb = %zu, size = %zu)\n",
-			config.show ? '\n' : 0, nmemb, size);
+			g_config.show ? '\n' : 0, nmemb, size);
 	if (SIZE_MAX / nmemb < size || !(ptr = malloc_internal(nmemb * size)))
 		return (NULL);
 	ft_bzero(ptr, nmemb * size);
-	if (config.show)
+	if (g_config.show)
 		show_alloc_mem();
 	return (ptr);
 }
