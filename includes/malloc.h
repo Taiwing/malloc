@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:10:38 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/19 17:08:06 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 11:35:56 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ typedef struct				s_memory_block
 ** type: what type of memory blocks it holds (tiny, small or large)
 ** size: total size of the zone counting this structure (mmap parameter)
 ** blocks: memory blocks list
-** prev: previous memory zone
 ** next: next memory zone
 */
 typedef struct				s_memory_zone
@@ -64,7 +63,6 @@ typedef struct				s_memory_zone
 	enum e_block_type		type;
 	size_t					size;
 	t_memory_block			*blocks;
-	struct s_memory_zone	*prev;
 	struct s_memory_zone	*next;
 }							t_memory_zone __attribute__ ((aligned(8)));
 

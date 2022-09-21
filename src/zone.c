@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:55 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/19 16:13:23 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 11:39:58 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ t_memory_zone	*push_new_zone(t_memory_zone **zones, size_t size)
 	zone->type = type;
 	zone->size = zone_size;
 	zone->blocks = (void *)zone + sizeof(t_memory_zone);
-	zone->prev = NULL;
 	zone->next = NULL;
 	first_block.type = type;
 	first_block.size = zone_size - sizeof(t_memory_zone) - sizeof(t_memory_block);
@@ -65,19 +64,21 @@ t_memory_zone	*push_new_zone(t_memory_zone **zones, size_t size)
 	{
 		for (ptr = *zones; ptr && ptr->next; ptr = ptr->next);
 		ptr->next = zone;
-		zone->prev = ptr;
 	}
 	return (zone);
 }
 
 void		delete_zone(t_memory_zone **zones, t_memory_zone *zone)
 {
-	if (zone->prev)
-		zone->prev->next = zone->next;
-	else
+	t_memory_zone	*ptr;
+
+	if (zone == *zones)
 		*zones = zone->next;
-	if (zone->next)
-		zone->next->prev = zone->prev;
+	else
+	{
+		for (ptr = *zones; ptr && ptr->next != zone; ptr = ptr->next);
+		ptr->next = zone->next;
+	}
 	munmap(zone, zone->size);
 }
 
