@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:25 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/22 21:08:03 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/22 21:23:48 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,9 @@ void		allocate_block(t_memory_block *block, size_t size)
 	}
 }
 
+/*
+** Try to enlarge a tiny/small block of memory if there is a free one after it.
+*/
 t_memory_block	*reallocate_block(t_memory_block *block, size_t size)
 {
 	size_t	new_size;
