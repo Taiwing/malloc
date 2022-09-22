@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:10:38 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 16:05:26 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/22 20:41:36 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,8 @@ void			delete_zone(t_memory_zone **zones, t_memory_zone *zone);
 int				is_free_zone(t_memory_zone *zone);
 int				is_full_zone(t_memory_zone *zone);
 void			defragment_zone(t_memory_zone *zone);
+t_memory_zone	*resize_zone(t_memory_zone **zones, t_memory_zone *zone,
+	size_t size);
 
 /*
 ** Debug functions

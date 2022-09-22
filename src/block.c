@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:25 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 16:08:09 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/21 16:11:17 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ t_memory_block	*get_free_block(t_memory_zone *zones, size_t size)
 }
 
 /*
-** Get the given block memory zone
+** Get the given block memory zone.
 */
 t_memory_zone	*get_block_zone(t_memory_zone *zones, t_memory_block *block)
 {
@@ -93,7 +93,7 @@ t_memory_zone	*get_block_zone(t_memory_zone *zones, t_memory_block *block)
 }
 
 /*
-** Set a given free block as allocated.
+** Set a given free block as allocated and split block if possible.
 */
 void		allocate_block(t_memory_block *block, size_t size)
 {
