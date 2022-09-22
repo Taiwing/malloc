@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:25 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/21 16:11:17 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/22 21:08:03 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,4 +110,21 @@ void		allocate_block(t_memory_block *block, size_t size)
 		block->next = (void *)block + sizeof(t_memory_block) + block->size;
 		ft_memcpy(block->next, &new_block, sizeof(new_block));
 	}
+}
+
+t_memory_block	*reallocate_block(t_memory_block *block, size_t size)
+{
+	size_t	new_size;
+
+	if (block->type == E_LARGE_BLOCK || !block->next || !block->next->free)
+		return (NULL);
+	if (block_type_from_size(size) != block->type)
+		return (NULL);
+	new_size = block->size + block->next->size + sizeof(t_memory_block);
+	if (new_size < size)
+		return (NULL);
+	block->size = new_size;
+	block->next = block->next->next;
+	allocate_block(block, size);
+	return (block);
 }

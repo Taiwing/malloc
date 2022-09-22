@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/22 20:52:35 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/22 21:04:25 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ static void	*realloc_internal(void *ptr, size_t size)
 		new_allocation = (void *)zone->blocks + sizeof(t_memory_block);
 	else if (size < block->size)
 		allocate_block(block, size);
-	else if (size > block->size)
+	else if (size > block->size && !reallocate_block(block, size))
 	{
 		if (!(new_allocation = malloc_internal(size)))
 			return (NULL);
