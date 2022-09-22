@@ -1,5 +1,7 @@
 libft_malloc.so
+libft_malloc_x86_64_Linux.so
 obj/
 *.swp
 *.swo
 *.a
+a.out

@@ -1,3 +1,9 @@
+############################## ENVIRONMENT ####################################
+
+ifeq ($(HOSTTYPE),)
+	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+endif
+
 ############################## COMPILE VAR #####################################
 
 CC			=	gcc
@@ -8,6 +14,7 @@ SRCDIR		=	src
 SUB1D		=	libft
 HFLAGS		=	-I $(HDIR) -I $(SUB1D)/$(HDIR)
 LIBS		=	$(SUB1D)/libft.a
+LIBNAME		=	libft_malloc_$(HOSTTYPE).so
 NAME		=	libft_malloc.so
 
 ############################## SOURCES #########################################
@@ -30,7 +37,8 @@ vpath			%.c	$(SRCDIR)
 all: $(NAME)
 
 $(NAME): $(SUB1D)/libft.a $(ODIR) $(OBJ)
-	gcc -shared -fpic -o $@ $(patsubst %.o,$(ODIR)/%.o,$(OBJ)) $(LIBS)
+	gcc -shared -fpic -o $(LIBNAME) $(patsubst %.o,$(ODIR)/%.o,$(OBJ)) $(LIBS)
+	ln -s $(LIBNAME) $@
 
 $(SUB1D)/libft.a:
 	make -C $(SUB1D)
@@ -53,6 +61,7 @@ clean:
 	make -C $(SUB1D) fclean
 
 fclean: clean
+	rm -f $(LIBNAME)
 	rm -f $(NAME)
 
 re: fclean all
