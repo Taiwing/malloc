@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/22 20:38:20 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/22 20:52:35 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static void	free_internal(void *ptr)
 
 void		free(void *ptr)
 {
-	if (g_config.history)
+	if (g_config.history || g_config.show)
 		ft_dprintf(2, "%cfree(ptr = %p)\n", g_config.show ? '\n' : 0, ptr);
 	free_internal(ptr);
 	if (g_config.show)
@@ -81,7 +81,7 @@ void		*malloc(size_t size)
 {
 	void	*ret;
 
-	if (g_config.history)
+	if (g_config.history || g_config.show)
 		ft_dprintf(2, "%cmalloc(size = %zu)\n", g_config.show ? '\n' : 0, size);
 	ret = malloc_internal(size);
 	if (g_config.show)
@@ -121,7 +121,7 @@ void		*realloc(void *ptr, size_t size)
 {
 	void				*new_allocation;
 
-	if (g_config.history)
+	if (g_config.history || g_config.show)
 		ft_dprintf(2, "%crealloc(ptr = %p, size = %zu)\n",
 			g_config.show ? '\n' : 0, ptr, size);
 	new_allocation = realloc_internal(ptr, size);
@@ -134,7 +134,7 @@ void		*calloc(size_t nmemb, size_t size)
 {
 	void	*ptr;
 
-	if (g_config.history)
+	if (g_config.history || g_config.show)
 		ft_dprintf(2, "%ccalloc(nmemb = %zu, size = %zu)\n",
 			g_config.show ? '\n' : 0, nmemb, size);
 	if (SIZE_MAX / nmemb < size || !(ptr = malloc_internal(nmemb * size)))
