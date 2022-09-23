@@ -38,7 +38,7 @@ all: $(NAME)
 
 $(NAME): $(SUB1D)/libft.a $(ODIR) $(OBJ)
 	gcc -shared -fpic -o $(LIBNAME) $(patsubst %.o,$(ODIR)/%.o,$(OBJ)) $(LIBS)
-	ln -s $(LIBNAME) $@
+	ln -sf $(LIBNAME) $@
 
 $(SUB1D)/libft.a:
 	make -C $(SUB1D)
