@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:55 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/22 20:44:17 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/09/22 23:46:49 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,9 @@ t_memory_zone	*push_new_zone(t_memory_zone **zones, size_t size)
 }
 
 /*
-** Resize the given zone up or down. If the new required size is equal to the
-** old one, nothing happens and the function succeeds. If it is bigger, mmap()
-** is called and the zone is augmented if possible. Finally, if it is smaller
-** munmap() is called on the end of the zone. This function returns a zone
-** pointer equal to the value passed on success and NULL on failure.
+** Resize the given zone up or down. This function returns a zone pointer on
+** success and NULL on failure. It must be a LARGE_BLOCK zone or it wont be
+** remapped.
 */
 t_memory_zone	*resize_zone(t_memory_zone **zones, t_memory_zone *zone,
 	size_t size)

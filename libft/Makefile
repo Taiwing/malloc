@@ -1,8 +1,14 @@
 ############################## COMPILE VAR #####################################
 
+ifdef THREAD_SAFE
+	#CFLAGS		=	-fpic -Wall -Wextra -Werror -DTHREAD_SAFE -g -fsanitize=address,undefined
+	CFLAGS		=	-fpic -Wall -Wextra -Werror -DTHREAD_SAFE
+else
+	#CFLAGS		=	-fpic -Wall -Wextra -Werror -g -fsanitize=address,undefined
+	CFLAGS		=	-fpic -Wall -Wextra -Werror
+endif
+
 CC			=	gcc
-CFLAGS		=	-fpic -Wall -Wextra -Werror
-#CFLAGS		=	-fpic -Wall -Wextra -Werror -g -fsanitize=address,undefined
 HDIR		=	includes
 SRCDIR		=	src
 HFLAGS		=	-I $(HDIR)

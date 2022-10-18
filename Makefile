@@ -1,4 +1,4 @@
-############################## ENVIRONMENT ####################################
+############################## ENVIRONMENT #####################################
 
 ifeq ($(HOSTTYPE),)
 	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
@@ -7,15 +7,22 @@ endif
 ############################## COMPILE VAR #####################################
 
 CC			=	gcc
-#CFLAGS		=	-fpic -Wall -Wextra -Werror
-CFLAGS		=	-fpic -Wall -Wextra -Werror -g
 HDIR		=	includes
 SRCDIR		=	src
 SUB1D		=	libft
 HFLAGS		=	-I $(HDIR) -I $(SUB1D)/$(HDIR)
-LIBS		=	$(SUB1D)/libft.a
 LIBNAME		=	libft_malloc_$(HOSTTYPE).so
 NAME		=	libft_malloc.so
+
+ifdef THREAD_SAFE
+#	CFLAGS		=	-fpic -Wall -Wextra -Werror -DTHREAD_SAFE
+	CFLAGS		=	-fpic -Wall -Wextra -Werror -DTHREAD_SAFE -g
+	LIBS		=	$(SUB1D)/libft.a -lpthread
+else
+#	CFLAGS		=	-fpic -Wall -Wextra -Werror
+	CFLAGS		=	-fpic -Wall -Wextra -Werror -g
+	LIBS		=	$(SUB1D)/libft.a
+endif
 
 ############################## SOURCES #########################################
 

@@ -15,6 +15,9 @@
 
 # include <stdlib.h>
 # include <stdint.h>
+# ifdef THREAD_SAFE
+#  include <pthread.h>
+# endif
 
 enum e_block_type	{
 	E_INVALID_BLOCK,
@@ -74,7 +77,17 @@ typedef struct				s_malloc_config
 {
 	int						history;
 	int						show;
+# ifdef THREAD_SAFE
+	pthread_mutex_t			mutex;
+# endif
 }							t_malloc_config;
+
+// Initialization value for malloc config
+# ifdef THREAD_SAFE
+#  define MALLOC_CONFIG_DEF	{ 0, 0, PTHREAD_MUTEX_INITIALIZER }
+# else
+#  define MALLOC_CONFIG_DEF	{ 0 }
+# endif
 
 /*
 ** Global variables
