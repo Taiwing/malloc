@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:10:38 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/22 21:04:02 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/10/18 12:57:38 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ typedef struct				s_memory_block
 	size_t					size;
 	int						free;
 	struct s_memory_block	*next;
-}							t_memory_block __attribute__ ((aligned(8)));
+}							t_memory_block __attribute__ ((aligned(16)));
 
 /*
 ** Memory Zone: mmap allocated memory zone
@@ -62,7 +62,7 @@ typedef struct				s_memory_zone
 	size_t					size;
 	t_memory_block			*blocks;
 	struct s_memory_zone	*next;
-}							t_memory_zone __attribute__ ((aligned(8)));
+}							t_memory_zone __attribute__ ((aligned(16)));
 
 /*
 ** Malloc Config: malloc configuration
@@ -134,7 +134,7 @@ void	*calloc(size_t nmemb, size_t size);
 )
 
 // Return a multiple of 8 from the given value (by increasing it if needed)
-# define	ALIGN_EIGHT(VALUE)	(((VALUE + 7) >> 3) << 3)
+# define	ALIGN_SIXTEEN(VALUE)	(((VALUE + 15) >> 4) << 4)
 
 // Mininum space a free tiny block must contain after a split
 # define	TINY_FREE_BLOCK_SIZE_MIN	(\

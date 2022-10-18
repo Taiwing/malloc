@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:25 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/22 21:23:48 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/10/18 12:57:48 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,11 @@ static int		is_splitable_block(t_memory_block *block, size_t size)
 	switch (block->type)
 	{
 		case E_TINY_BLOCK:
-			return (block->size >= (ALIGN_EIGHT(size)
+			return (block->size >= (ALIGN_SIXTEEN(size)
 				+ TINY_FREE_BLOCK_SIZE_MIN));
 			break;
 		case E_SMALL_BLOCK:
-			return (block->size >= (ALIGN_EIGHT(size)
+			return (block->size >= (ALIGN_SIXTEEN(size)
 				+ SMALL_FREE_BLOCK_SIZE_MIN));
 			break;
 		default:
@@ -103,10 +103,10 @@ void		allocate_block(t_memory_block *block, size_t size)
 	if (is_splitable_block(block, size))
 	{
 		new_block.type = block->type;
-		new_block.size = block->size - ALIGN_EIGHT(size) - sizeof(new_block);
+		new_block.size = block->size - ALIGN_SIXTEEN(size) - sizeof(new_block);
 		new_block.free = 1;
 		new_block.next = block->next;
-		block->size = ALIGN_EIGHT(size);
+		block->size = ALIGN_SIXTEEN(size);
 		block->next = (void *)block + sizeof(t_memory_block) + block->size;
 		ft_memcpy(block->next, &new_block, sizeof(new_block));
 	}
