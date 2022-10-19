@@ -20,11 +20,10 @@ git clone https://github.com/Taiwing/malloc
 cd malloc/ && make
 ```
 
-> This will result in an shared object file. This file will be named
-> *libft_malloc_[hostype].so* where hostype is the type of machine and kernel
-> of the host. A *libft_malloc.so* symbolic link to this file will be created
-> at the same time. It is to be used for running programs with these malloc
-> functions.
+This will result in an shared object file. This file will be named
+*libft_malloc_[hostype].so* where hostype is the type of machine and kernel of
+the host. A *libft_malloc.so* symbolic link to this file will be created at the
+same time. It is to be used for running programs with these malloc functions.
 
 ### Thread safety
 
