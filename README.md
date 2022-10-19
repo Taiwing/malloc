@@ -101,7 +101,9 @@ free(ptr = 0x7fe18f4a4040)
 
 #### MALLOC_SHOW
 
-Show the state of the allocated memory at each function call.
+Show the state of the allocated memory at each function call (check the
+[How it works](#how-it-works) section for an in-depth explanation of the
+output).
 
 ```shell
 MALLOC_SHOW=1 LD_PRELOAD=./libft_malloc.so ls -l
@@ -129,3 +131,32 @@ SMALL : 0x7f5f04231020
 0x7f5f04231040 - 0x7f5f04231350 : 784 bytes
 Total : 928 bytes
 ```
+
+The address following the title of each section is the start of the zone (TINY,
+SMALL and LARGE are the types of the zones). Then each line is an allocation.
+The left address is the start of the allocated memory block (the address
+actually returned by the malloc functions), and the right one is where the block
+ends. The size in bytes is showed at the end of the line.
+
+## How it works
+
+This implentation relies on the *mmap()*, *mremap()* and *munmap()* functions to
+dynamically allocate, reallocate and free memory. Allocations are separated in
+three types depenging on their size. By default every allocation smaller than
+512 bytes are TINY, smaller than 4096 bytes (and bigger than 512) are SMALL and
+everything above is LARGE.
+
+For performance reasons this implentation will limit at a minimum the number of
+calls to the underlying memory functions. The first time that *malloc()* is
+called *mmap()* will be used to allocate a memory zone able to store at least
+128 allocations by default. Then a block will be allocated in the zone to store
+the allocation. For the following allocations *mmap()* will not have to be
+called and a block will directly be allocated if available. LARGE allocations
+work differently. For this type of memory request a new zone will have to be
+created for each allocation because there is no upper bound on their size. It is
+guaranteed that each allocated block and resulting address will be sixteen
+aligned.
+
+*mmunap()* is called when deleting an empty zone if an other one of the same
+type still exists. However LARGE zones are directly deleted when *free()* is
+called.
