@@ -68,8 +68,8 @@ at run time.
 
 #### MALLOC_HISTORY
 
-List of malloc functions calls and their parameters while the program is
-running.
+List of malloc functions calls, their parameters and their eventual return value
+while the program is running.
 
 ```shell
 MALLOC_HISTORY=1 LD_PRELOAD=./libft_malloc.so ls -l
@@ -78,9 +78,9 @@ MALLOC_HISTORY=1 LD_PRELOAD=./libft_malloc.so ls -l
 partial output on a regular *ls* call:
 
 ```
-malloc(size = 20)
-malloc(size = 21)
-malloc(size = 21)
+malloc(size = 20) --> 0x7fcb326259e0
+malloc(size = 21) --> 0x7fe18fd41c80
+malloc(size = 21) --> 0x7fe18fd42660
 free(ptr = 0x0)
 free(ptr = 0x7fe18fd41c80)
 free(ptr = 0x0)
@@ -100,7 +100,7 @@ free(ptr = 0x7fe18f4a4040)
 
 #### MALLOC_SHOW
 
-Show the state of the allocated memory at each function call (check the
+Show a list of allocation blocks per zone at each function call (check the
 [How it works](#how-it-works) section for an in-depth explanation of the
 output).
 
@@ -111,18 +111,18 @@ MALLOC_SHOW=1 LD_PRELOAD=./libft_malloc.so ls -l
 example output:
 
 ```
-malloc(size = 120)
+malloc(size = 120) --> 0x7f5f0459b040
 TINY : 0x7f5f0459b020
 0x7f5f0459b040 - 0x7f5f0459b0c0 : 128 bytes
 Total : 128 bytes
 
-malloc(size = 12)
+malloc(size = 12) --> 0x7f5f0459b0e0
 TINY : 0x7f5f0459b020
 0x7f5f0459b040 - 0x7f5f0459b0c0 : 128 bytes
 0x7f5f0459b0e0 - 0x7f5f0459b0f0 : 16 bytes
 Total : 144 bytes
 
-malloc(size = 776)
+malloc(size = 776) --> 0x7f5f04231040
 TINY : 0x7f5f0459b020
 0x7f5f0459b040 - 0x7f5f0459b0c0 : 128 bytes
 0x7f5f0459b0e0 - 0x7f5f0459b0f0 : 16 bytes
@@ -139,14 +139,14 @@ ends. The size in bytes is showed at the end of the line.
 
 ## How it works
 
-This implentation relies on the *mmap()*, *mremap()* and *munmap()* functions to
-dynamically allocate, reallocate and free memory. Allocations are separated in
-three types depenging on their size. By default every allocation smaller than
+This implementation relies on the *mmap()*, *mremap()* and *munmap()* functions
+to dynamically allocate, reallocate and free memory. Allocations are separated
+in three types depenging on their size. By default every allocation smaller than
 512 bytes are TINY, smaller than 4096 bytes (and bigger than 512) are SMALL and
 everything above is LARGE.
 
-For performance reasons this implentation will limit at a minimum the number of
-calls to the underlying memory functions. The first time that *malloc()* is
+For performance reasons this implementation will limit at a minimum the number
+of calls to the underlying memory functions. The first time that *malloc()* is
 called *mmap()* will be used to allocate a memory zone able to store at least
 128 allocations by default. Then a block will be allocated in the zone to store
 the allocation. For the following allocations *mmap()* will not have to be

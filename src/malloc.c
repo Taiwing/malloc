@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/23 22:55:15 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/10/19 18:33:26 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,10 @@ void		*malloc(size_t size)
 # ifdef THREAD_SAFE
 	ft_mutex_lock(&g_config.mutex);
 # endif
-	if (g_config.history || g_config.show)
-		ft_dprintf(2, "%cmalloc(size = %zu)\n", g_config.show ? '\n' : 0, size);
 	ret = malloc_internal(size);
+	if (g_config.history || g_config.show)
+		ft_dprintf(2, "%cmalloc(size = %zu) --> %p\n",
+			g_config.show ? '\n' : 0, size, ret);
 	if (g_config.show)
 		show_alloc_mem();
 # ifdef THREAD_SAFE
@@ -137,9 +138,11 @@ void		*realloc(void *ptr, size_t size)
 	ft_mutex_lock(&g_config.mutex);
 # endif
 	if (g_config.history || g_config.show)
-		ft_dprintf(2, "%crealloc(ptr = %p, size = %zu)\n",
+		ft_dprintf(2, "%crealloc(ptr = %p, size = %zu)",
 			g_config.show ? '\n' : 0, ptr, size);
 	new_allocation = realloc_internal(ptr, size);
+	if (g_config.history || g_config.show)
+		ft_dprintf(2, " --> %p\n", new_allocation);
 	if (g_config.show)
 		show_alloc_mem();
 # ifdef THREAD_SAFE
@@ -155,11 +158,11 @@ void		*calloc(size_t nmemb, size_t size)
 # ifdef THREAD_SAFE
 	ft_mutex_lock(&g_config.mutex);
 # endif
-	if (g_config.history || g_config.show)
-		ft_dprintf(2, "%ccalloc(nmemb = %zu, size = %zu)\n",
-			g_config.show ? '\n' : 0, nmemb, size);
 	if (size <= SIZE_MAX / nmemb && (ptr = malloc_internal(nmemb * size)))
 		ft_bzero(ptr, nmemb * size);
+	if (g_config.history || g_config.show)
+		ft_dprintf(2, "%ccalloc(nmemb = %zu, size = %zu) --> %p\n",
+			g_config.show ? '\n' : 0, nmemb, size, ptr);
 	if (g_config.show)
 		show_alloc_mem();
 # ifdef THREAD_SAFE
