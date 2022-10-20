@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:00:10 by yforeau           #+#    #+#             */
-/*   Updated: 2022/10/20 09:42:42 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/10/20 09:59:07 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void		print_hex(void *mem, size_t size)
 		return;
 	while (size)
 	{
-		ft_dprintf(2, "%1$p %1$8t %04hx\n", mem);
+		ft_dprintf(2, "%1$p %1$16.2t %02hhx%02hhx\n", mem);
 		size -= 16;
 		mem += 16;
 	}
