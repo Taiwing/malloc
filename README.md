@@ -160,6 +160,39 @@ Allocated : 16 bytes
 Total : 597856 bytes
 ```
 
+#### MALLOC_SHOW_HEX
+
+Like MALLOC_SHOW execpt that it also prints a hexdump of each allocated block.
+
+```shell
+MALLOC_SHOW_HEX=1 LD_PRELOAD=./libft_malloc.so ls -l
+```
+
+example output:
+
+```
+malloc(size = 12) --> 0x7f9f965420e0
+TINY : 0x7f9f96542020
+0x7f9f96542040 - 0x7f9f965420c0 : 128 bytes
+0x7f9f96542040  7475 3866 0000 0000 0000 0000 0000 0000
+0x7f9f96542050  0001 0000 0000 0000 0f90 0001 0000 0000
+0x7f9f96542060  0001 0000 0000 0000 0000 0000 0000 0000
+0x7f9f96542070  0000 0000 0000 0000 0000 0000 0000 0000
+0x7f9f96542080  0000 0000 0000 0000 0000 0000 0000 0000
+0x7f9f96542090  0000 0000 0000 0000 0000 0000 0000 0000
+0x7f9f965420a0  0000 0000 0000 0000 65c0 9650 7f9f 0000
+0x7f9f965420b0  ffff ffff 0040 0000 0000 0000 0000 0000
+0x7f9f965420e0 - 0x7f9f965420f0 : 16 bytes
+0x7f9f965420e0  2130 9654 7f9f 0000 0000 0000 0000 0000
+Total : 144 bytes
+```
+
+> The dump shows the memory block just when the function has finished executing.
+> This means that in case of a *malloc()* call the memory will be uninitialized
+> when it is printed for the first time (this does not mean it will zeroed out
+> though). This is the case in the example above where the 12 bytes allocation
+> translates into a 16 byte long block which is not yet initialized by the user.
+
 ## How it works
 
 This implementation relies on the *mmap()*, *mremap()* and *munmap()* functions
