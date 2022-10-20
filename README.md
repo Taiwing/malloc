@@ -162,7 +162,7 @@ Total : 597856 bytes
 
 #### MALLOC_SHOW_HEX
 
-Like MALLOC_SHOW execpt that it also prints a hexdump of each allocated block.
+Like MALLOC_SHOW except that it also prints a hexdump of each allocated block.
 
 ```shell
 MALLOC_SHOW_HEX=1 LD_PRELOAD=./libft_malloc.so ls -l
