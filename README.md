@@ -104,6 +104,8 @@ Show a list of allocation blocks per zone at each function call (check the
 [How it works](#how-it-works) section for an in-depth explanation of the
 output).
 
+> As shown below, this option also implicitly sets MALLOC_HISTORY.
+
 ```shell
 MALLOC_SHOW=1 LD_PRELOAD=./libft_malloc.so ls -l
 ```
@@ -136,6 +138,27 @@ SMALL and LARGE are the types of the zones). Then each line is an allocation.
 The left address is the start of the allocated memory block (the address
 actually returned by the malloc functions), and the right one is where the block
 ends. The size in bytes is showed at the end of the line.
+
+#### MALLOC_SHOW_FREE
+
+Like MALLOC_SHOW but also lists free blocks in each zone.
+
+```shell
+MALLOC_SHOW_FREE=1 LD_PRELOAD=./libft_malloc.so ls -l
+```
+
+example output:
+
+```
+malloc(size = 5) --> 0x7f8c80da9040
+TINY : 0x7f8c80da9020
+0x7f8c80da9040 - 0x7f8c80da9050 : 16 allocated bytes
+0x7f8c80da9070 - 0x7f8c80dba000 : 69520 free bytes
+SMALL : 0x7f8c80a3f020
+0x7f8c80a3f040 - 0x7f8c80ac0000 : 528320 free bytes
+Allocated : 16 bytes
+Total : 597856 bytes
+```
 
 ## How it works
 
