@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/10/19 18:33:26 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/10/19 19:09:32 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,11 @@ t_malloc_config	g_config = MALLOC_CONFIG_DEF;
 
 void __attribute__ ((constructor))	init_malloc(void)
 {
-	g_config.history = !!getenv("MALLOC_HISTORY");
-	g_config.show = !!getenv("MALLOC_SHOW");
+	g_config.show_hex = !!getenv("MALLOC_SHOW_HEX");
+	g_config.show_free = !!getenv("MALLOC_SHOW_FREE");
+	g_config.show = !!getenv("MALLOC_SHOW") || g_config.show_hex
+		|| g_config.show_free;
+	g_config.history = !!getenv("MALLOC_HISTORY") || g_config.show;
 }
 
 static void	free_internal(void *ptr)
@@ -54,11 +57,11 @@ void		free(void *ptr)
 # ifdef THREAD_SAFE
 	ft_mutex_lock(&g_config.mutex);
 # endif
-	if (g_config.history || g_config.show)
+	if (g_config.history)
 		ft_dprintf(2, "%cfree(ptr = %p)\n", g_config.show ? '\n' : 0, ptr);
 	free_internal(ptr);
 	if (g_config.show)
-		show_alloc_mem();
+		show_mem();
 # ifdef THREAD_SAFE
 	ft_mutex_unlock(&g_config.mutex);
 # endif
@@ -91,11 +94,11 @@ void		*malloc(size_t size)
 	ft_mutex_lock(&g_config.mutex);
 # endif
 	ret = malloc_internal(size);
-	if (g_config.history || g_config.show)
+	if (g_config.history)
 		ft_dprintf(2, "%cmalloc(size = %zu) --> %p\n",
 			g_config.show ? '\n' : 0, size, ret);
 	if (g_config.show)
-		show_alloc_mem();
+		show_mem();
 # ifdef THREAD_SAFE
 	ft_mutex_unlock(&g_config.mutex);
 # endif
@@ -137,14 +140,14 @@ void		*realloc(void *ptr, size_t size)
 # ifdef THREAD_SAFE
 	ft_mutex_lock(&g_config.mutex);
 # endif
-	if (g_config.history || g_config.show)
+	if (g_config.history)
 		ft_dprintf(2, "%crealloc(ptr = %p, size = %zu)",
 			g_config.show ? '\n' : 0, ptr, size);
 	new_allocation = realloc_internal(ptr, size);
-	if (g_config.history || g_config.show)
+	if (g_config.history)
 		ft_dprintf(2, " --> %p\n", new_allocation);
 	if (g_config.show)
-		show_alloc_mem();
+		show_mem();
 # ifdef THREAD_SAFE
 	ft_mutex_unlock(&g_config.mutex);
 # endif
@@ -160,11 +163,11 @@ void		*calloc(size_t nmemb, size_t size)
 # endif
 	if (size <= SIZE_MAX / nmemb && (ptr = malloc_internal(nmemb * size)))
 		ft_bzero(ptr, nmemb * size);
-	if (g_config.history || g_config.show)
+	if (g_config.history)
 		ft_dprintf(2, "%ccalloc(nmemb = %zu, size = %zu) --> %p\n",
 			g_config.show ? '\n' : 0, nmemb, size, ptr);
 	if (g_config.show)
-		show_alloc_mem();
+		show_mem();
 # ifdef THREAD_SAFE
 	ft_mutex_unlock(&g_config.mutex);
 # endif

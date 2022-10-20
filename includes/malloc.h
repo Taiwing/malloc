@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:10:38 by yforeau           #+#    #+#             */
-/*   Updated: 2022/10/18 12:57:38 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/10/20 09:07:00 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,15 @@ typedef struct				s_memory_zone
 **
 ** history: show malloc functions calls
 ** show: print malloc memory state on change
+** show_free: also show free blocks
+** show_hex: show hex dump of allocated zones
 */
 typedef struct				s_malloc_config
 {
 	int						history;
 	int						show;
+	int						show_free;
+	int						show_hex;
 # ifdef THREAD_SAFE
 	pthread_mutex_t			mutex;
 # endif
@@ -84,9 +88,9 @@ typedef struct				s_malloc_config
 
 // Initialization value for malloc config
 # ifdef THREAD_SAFE
-#  define MALLOC_CONFIG_DEF	{ 0, 0, PTHREAD_MUTEX_INITIALIZER }
+#  define MALLOC_CONFIG_DEF	{ 0, 0, 0, 0, PTHREAD_MUTEX_INITIALIZER }
 # else
-#  define MALLOC_CONFIG_DEF	{ 0 }
+#  define MALLOC_CONFIG_DEF	{ 0, 0, 0, 0 }
 # endif
 
 /*
@@ -124,7 +128,8 @@ t_memory_zone	*resize_zone(t_memory_zone **zones, t_memory_zone *zone,
 /*
 ** Debug functions
 */
-uint64_t	print_zone(t_memory_zone *zone, int show_free, uint64_t *maped);
+uint64_t	print_zone(t_memory_zone *zone, int show_free, int show_hex,
+	uint64_t *maped_total);
 void		show_alloc_mem(void);
 void		show_mem(void);
 
