@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:00:10 by yforeau           #+#    #+#             */
-/*   Updated: 2022/10/20 09:59:07 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/10/21 12:46:22 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static uint64_t	print_zone(t_memory_zone *zone, int show_free, int show_hex,
 
 	if (is_free_zone(zone) && !show_free)
 		return (0);
-	ft_dprintf(2, "%s : %p\n", g_block_type_strings[zone->type],
+	ft_dprintf(2, "%-5s : %p\n", g_block_type_strings[zone->type],
 		(void *)zone + sizeof(t_memory_zone));
 	for (t_memory_block *block = zone->blocks; block; block = block->next)
 	{
