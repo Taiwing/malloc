@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 16:05:33 by yforeau           #+#    #+#             */
-/*   Updated: 2022/10/19 19:09:32 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/10/21 12:37:53 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,13 @@ static void	free_internal(void *ptr)
 	}
 	block->free = 1;
 	if (zone->type == E_LARGE_BLOCK)
-		return (delete_zone(&g_zones, zone));
+		return (free_zone(&g_zones, zone));
 	else if (is_free_zone(zone))
 	{
 		for (t_memory_zone *ptr = g_zones; ptr; ptr = ptr->next)
 		{
 			if (ptr != zone && ptr->type == zone->type && !is_full_zone(ptr))
-				return (delete_zone(&g_zones, zone));
+				return (free_zone(&g_zones, zone));
 		}
 	}
 	defragment_zone(zone);

@@ -6,7 +6,7 @@
 /*   By: yforeau <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:07:55 by yforeau           #+#    #+#             */
-/*   Updated: 2022/09/22 23:46:49 by yforeau          ###   ########.fr       */
+/*   Updated: 2022/10/21 12:40:30 by yforeau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,41 @@ static size_t		get_zone_size(enum e_block_type type, size_t block_size)
 	return (zone_size);
 }
 
+static void		insert_zone(t_memory_zone **zones, t_memory_zone *zone)
+{
+	t_memory_zone	*ptr;
+
+	if (!*zones)
+		*zones = zone;
+	else if (*zones > zone)
+	{
+		zone->next = *zones;
+		*zones = zone;
+	}
+	else
+	{
+		for (ptr = *zones; ptr->next && ptr->next < zone; ptr = ptr->next);
+		zone->next = ptr->next;
+		ptr->next = zone;
+	}
+}
+
+static void		remove_zone(t_memory_zone **zones, t_memory_zone *zone, t_memory_zone *next)
+{
+	t_memory_zone	*ptr;
+
+	if (zone == *zones)
+		*zones = next;
+	else
+	{
+		for (ptr = *zones; ptr && ptr->next != zone; ptr = ptr->next);
+		ptr->next = next;
+	}
+}
+
 t_memory_zone	*push_new_zone(t_memory_zone **zones, size_t size)
 {
-	t_memory_zone		*zone = NULL, *ptr = NULL;
+	t_memory_zone		*zone = NULL;
 	enum e_block_type	type = block_type_from_size(size);
 	size_t				zone_size = get_zone_size(type, size);
 	t_memory_block		first_block = { 0 };
@@ -59,13 +91,7 @@ t_memory_zone	*push_new_zone(t_memory_zone **zones, size_t size)
 		- sizeof(t_memory_block);
 	first_block.free = 1;
 	ft_memcpy(zone->blocks, &first_block, sizeof(first_block));
-	if (!*zones)
-		*zones = zone;
-	else
-	{
-		for (ptr = *zones; ptr && ptr->next; ptr = ptr->next);
-		ptr->next = zone;
-	}
+	insert_zone(zones, zone);
 	return (zone);
 }
 
@@ -93,30 +119,15 @@ t_memory_zone	*resize_zone(t_memory_zone **zones, t_memory_zone *zone,
 		- sizeof(t_memory_block);
 	if (new_zone != zone)
 	{
-		if (*zones == zone)
-			*zones = new_zone;
-		else
-			for (t_memory_zone *ptr = *zones; ptr; ptr = ptr->next)
-				if (ptr->next == zone)
-				{
-					ptr->next = new_zone;
-					break;
-				}
+		remove_zone(zones, zone, new_zone->next);
+		insert_zone(zones, new_zone);
 	}
 	return (new_zone);
 }
 
-void		delete_zone(t_memory_zone **zones, t_memory_zone *zone)
+void		free_zone(t_memory_zone **zones, t_memory_zone *zone)
 {
-	t_memory_zone	*ptr;
-
-	if (zone == *zones)
-		*zones = zone->next;
-	else
-	{
-		for (ptr = *zones; ptr && ptr->next != zone; ptr = ptr->next);
-		ptr->next = zone->next;
-	}
+	remove_zone(zones, zone, zone->next);
 	munmap(zone, zone->size);
 }
 
