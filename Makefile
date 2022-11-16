@@ -15,12 +15,10 @@ LIBNAME		=	libft_malloc_$(HOSTTYPE).so
 NAME		=	libft_malloc.so
 
 ifdef THREAD_SAFE
-#	CFLAGS		=	-fpic -Wall -Wextra -Werror -DTHREAD_SAFE
-	CFLAGS		=	-fpic -Wall -Wextra -Werror -DTHREAD_SAFE -g
+	CFLAGS		=	-fpic -Wall -Wextra -Werror -DTHREAD_SAFE
 	LIBS		=	$(SUB1D)/libft.a -lpthread
 else
-#	CFLAGS		=	-fpic -Wall -Wextra -Werror
-	CFLAGS		=	-fpic -Wall -Wextra -Werror -g
+	CFLAGS		=	-fpic -Wall -Wextra -Werror
 	LIBS		=	$(SUB1D)/libft.a
 endif
 
